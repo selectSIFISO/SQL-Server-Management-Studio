@@ -1,20 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-//using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
-using itextsharp;
-using itextsharp.pdfa;
-using iTextSharp.xtra;
 using iTextSharp.text;
-using iTextSharp.testutils;
-using iTextSharp.awt;
-using iTextSharp.xmp;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text.pdf;
 
 namespace iTextSharpPDF
 {
@@ -357,6 +347,43 @@ namespace iTextSharpPDF
                 String exMsg = ex.Message;
                 MessageBox.Show(String.Format("General Exception: {0}", ex.Message));
             }
+        }
+
+        private void btnExport_Click_Click(object sender, EventArgs e)
+        {
+            String strSelectUserListBuilder = @"<html><body>
+                                <h1>My First Heading</h1>
+                                <p style='color:blue'>My first paragraph.</p>
+                            </body>
+                        </html>";
+
+            String htmlText = strSelectUserListBuilder.ToString();
+
+            Document document = new Document(PageSize.A4, 25, 25, 25, 25);
+
+            PdfWriter.GetInstance(document, new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\MySamplePDF.pdf", FileMode.Create));
+            document.Open();
+
+            iTextSharp.text.html.simpleparser.HTMLWorker hw = new iTextSharp.text.html.simpleparser.HTMLWorker(document);
+
+            hw.Parse(new StringReader(htmlText));
+            document.Close();
+
+            //Response.ContentType = "application/pdf";
+            //Response.AddHeader("content-disposition", "attachment;filename=Panel.pdf");
+            //Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            //StringWriter sw = new StringWriter();
+            //HtmlTextWriter hw = new HtmlTextWriter(sw);
+            //pnlPerson.RenderControl(hw);
+            //StringReader sr = new StringReader(sw.ToString());
+            //Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 100f, 0f);
+            //HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
+            //PdfWriter.GetInstance(pdfDoc, Response.OutputStream);
+            //pdfDoc.Open();
+            //htmlparser.Parse(sr);
+            //pdfDoc.Close();
+            //Response.Write(pdfDoc);
+            //Response.End();
         }
     }
 }
